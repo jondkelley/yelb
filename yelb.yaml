@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: yelb-ui2
+  labels:
+    app: yelb-ui2
+    tier: frontend
+  namespace: yelb
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    nodePort: 30009
+  selector:
+    app: yelb-ui2
+    tier: frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yelb-ui2
+  namespace: yelb
+spec:
+  selector:
+    matchLabels:
+      app: yelb-ui2
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: yelb-ui2
+        tier: frontend
+    spec:
+      containers:
+      - name: yelb-ui2
+        image: jondkelley/yelb-ui:latest
+        ports:
+        - containerPort: 80
