@@ -47,5 +47,11 @@ COPY --from=0 /clarity-seed/src/prod/dist /clarity-seed/prod/dist
 COPY --from=0 /clarity-seed/src/test/dist /clarity-seed/test/dist
 COPY --from=0 /clarity-seed/src/dev/dist /clarity-seed/dev/dist
 
-CMD ["./startup.sh"]
+ADD nginx.conf /etc/nginx/nginx.conf
 
+RUN chown -R nginx:nginx /var/cache/nginx/ && \
+  chown -R nginx:nginx /etc/nginx
+
+USER nginx
+
+CMD ["./startup.sh"]

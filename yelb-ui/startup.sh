@@ -8,6 +8,8 @@ cd clarity-seed
 # and the awsvpc mode is needed for A records (bridge only supports SRV records) 
 if [ $SEARCH_DOMAIN ]; then echo "search ${SEARCH_DOMAIN}" >> /etc/resolv.conf; fi 
 
+sed -i -- 's#listen       80;#listen       8080;#g' $NGINX_CONF
+
 sed -i -- 's#/usr/share/nginx/html#/clarity-seed/'$UI_ENV'/dist#g' $NGINX_CONF
 
 # this adds the reverse proxy configuration to nginx 
@@ -22,9 +24,9 @@ if ! grep -q "location /api" "$NGINX_CONF"; then
     gzip_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript;
     gunzip on;
 EOF
-" > /proxycfg.txt
+" > /etc/nginx/proxycfg.txt
     # echo "        proxy_set_header Host $host;" >> /proxycfg.txt
-    sed --in-place '/server_name  localhost;/ r /proxycfg.txt' $NGINX_CONF
+    sed --in-place '/server_name  localhost;/ r /etc/nginx/proxycfg.txt' $NGINX_CONF
 fi
 
 nginx -g "daemon off;" 

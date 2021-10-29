@@ -56,7 +56,7 @@ spec:
   ports:
   - port: 80
     protocol: TCP
-    targetPort: 80
+    targetPort: 8080
     # nodePort: 32777 <- if not specified, the system will generate a nodePort value
   selector:
     app: yelb-ui
@@ -78,11 +78,14 @@ spec:
         app: yelb-ui
         tier: frontend
     spec:
+      securityContext:
+        runAsUser: 101
       containers:
       - name: yelb-ui
-        image: mreferre/yelb-ui:0.7
+        image: jondkelley/yelb-ui:latest
+        imagePullPolicy: Always
         ports:
-        - containerPort: 80
+        - containerPort: 8080
 ---
 apiVersion: apps/v1
 kind: Deployment
